@@ -1,0 +1,3 @@
+org\sample\controller\GreetingResource.class
+META-INF\panache-archive.marker
+org\sample\entity\User.class
