@@ -1,19 +1,17 @@
-package org.sample.entity;
+package org.sample.DTO;
 
-import io.quarkus.mongodb.panache.PanacheMongoEntity;
+public class UserDto {
 
-public class User extends PanacheMongoEntity {
+    private String userName;
 
-    public String userName;
+    private  String password;
 
-    public String password;
-
-    public User(String userName, String password, String role) {
-        this.userName = userName;
-        this.password = password;
+    public UserDto() {
     }
 
-    public User() {
+    public UserDto(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
     }
 
     public String getUserName() {

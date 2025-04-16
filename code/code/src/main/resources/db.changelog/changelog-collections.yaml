@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Gnanesh
+      changes:
+        - createCollection:
+            collectionName: user

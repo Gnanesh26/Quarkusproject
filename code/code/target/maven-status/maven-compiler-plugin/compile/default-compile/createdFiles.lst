@@ -1,3 +1,5 @@
+org\sample\Resources\UserResource.class
 org\sample\controller\GreetingResource.class
 META-INF\panache-archive.marker
+org\sample\DTO\UserDto.class
 org\sample\entity\User.class
