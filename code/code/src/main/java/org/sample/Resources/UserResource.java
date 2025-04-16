@@ -16,7 +16,7 @@ import org.sample.entity.User;
 public class UserResource {
 
     @POST
-    @Path("/register")
+    @Path("/sign-up")
     public Response register(UserDto userDto) {
         // Validate input: username and password must not be null
         if (userDto.getUserName() == null || userDto.getPassword() == null) {
@@ -39,6 +39,9 @@ public class UserResource {
         User user = new User();
         user.userName = userDto.getUserName();
         user.password = hashedPassword;  // Store hashed password
+        user.firstName = userDto.getFirstName();
+        user.lastName = userDto.getLastName();
+        user.email = userDto.getEmail();
 
         // Persist the new user entity to MongoDB
         user.persist();
@@ -54,30 +57,39 @@ public class UserResource {
     @POST
     @Path("/login")
     public Response login(UserDto userDto) {
+        // Validate input: username and password must not be null
         if (userDto.getUserName() == null || userDto.getPassword() == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("Username and password required")
                     .build();
         }
 
-        // Query using entity field name (adjust if you use @BsonProperty)
-        User user = User.find("userName", userDto.getUserName()).firstResult();
+        String loginInput = userDto.getUserName();
 
+        // Try to find user by username
+        User user = User.find("userName", loginInput).firstResult();
+
+        // If not found by username, try email
+        if (user == null) {
+            user = User.find("email", loginInput).firstResult();
+        }
+
+        // If still not found, unauthorized
         if (user == null) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("Invalid username")
+                    .entity("Invalid username/email or password")
                     .build();
         }
 
-        // Verify password with BCrypt
+        // Verify password using BCrypt
         boolean passwordMatch = BCrypt.checkpw(userDto.getPassword(), user.password);
         if (!passwordMatch) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity("Invalid password")
+                    .entity("Invalid username/email or password")
                     .build();
         }
 
+        // Successful login
         return Response.ok("Login successful").build();
     }
-
 }
